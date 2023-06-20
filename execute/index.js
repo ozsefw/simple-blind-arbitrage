@@ -34,10 +34,22 @@ async function main() {
 
     if (argv.network == 'mainnet') {
         MatchMaker = new EventSource(config.mainnetMatchMaker)
-        bundleExecutor = new BundleExecutor(signer, flashbotsBundleProvider, process.env.executorContractAddress, config.mainnetBundleAPI, config.percentageToKeep)
+        bundleExecutor = new BundleExecutor(
+            signer,
+            flashbotsBundleProvider,
+            process.env.executorContractAddress,
+            config.mainnetBundleAPI,
+            config.percentageToKeep
+        )
     } else if (argv.network == 'goerli') {
         MatchMaker = new EventSource(config.goerliMatchMaker)
-        bundleExecutor = new BundleExecutor(signer, flashbotsBundleProvider, process.env.executorContractAddress, config.goerliBundleAPI, config.percentageToKeep)
+        bundleExecutor = new BundleExecutor(
+            signer,
+            flashbotsBundleProvider,
+            process.env.executorContractAddress,
+            config.goerliBundleAPI,
+            config.percentageToKeep
+        )
     }
 
     MatchMaker.onmessage = async (event) => {
@@ -64,7 +76,6 @@ async function main() {
     
             await bundleExecutor.execute(firstPair, secondPair, data.hash) // Execute the bundle if we've made it this far
         }
-
     };
     MatchMaker.onerror = (error) => {
         // Handle the error
