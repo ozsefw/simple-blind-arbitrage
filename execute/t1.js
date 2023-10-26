@@ -7,18 +7,21 @@ function sleep (time) {
 
 async function sub_mm(){
     console.log("Event: sub_mm")
+    var last_ts = Date.now();
     let MatchMaker = new EventSource(config.mainnetMatchMaker)
 
     MatchMaker.onmessage = async (event) => {
+        let ts = Date.now();
         if (event.type == 'message'){
             var msg = JSON.parse(event.data);
-            msg["ts"] = Date.now()
+            msg["ts"] = ts
             console.log(JSON.stringify(msg, null, 2))
         }
         else{
-            event["ts"] = Date.now()
+            event["ts"] = ts
             console.log(event)
         }
+        last_ts = ts;
     };
 
     MatchMaker.onerror = (error) => {
@@ -26,7 +29,16 @@ async function sub_mm(){
         MatchMaker.close()
     }
 
-    while(MatchMaker.readyState != EventSource.CLOSED){
+    while (true){
+        if (MatchMaker.readyState != EventSource.CLOSED){
+            console.log("Event: EventSource closed");
+            break;
+        }
+        if ((last_ts - Date.now()) > 30*1000){
+            console.log("Event: no update too long");
+            MatchMaker.close()
+            break;
+        }
         await sleep(3000);
     }
 }
