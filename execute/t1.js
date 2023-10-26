@@ -30,7 +30,7 @@ async function sub_mm(){
     }
 
     while (true){
-        if (MatchMaker.readyState != EventSource.CLOSED){
+        if (MatchMaker.readyState == EventSource.CLOSED){
             console.log("Event: EventSource closed");
             break;
         }
