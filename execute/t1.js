@@ -30,15 +30,19 @@ async function sub_mm(){
     }
 
     while (true){
+        let cur_ts = Date.now();
+        console.log("cur: %s, last: %s, state: ", cur_ts, last_ts, MatchMaker.readyState);
+
         if (MatchMaker.readyState == EventSource.CLOSED){
             console.log("Event: EventSource closed");
             break;
         }
-        if ((Date.now() - last_ts) > 30*1000){
+        if ((cur_ts - last_ts) > (30*1000) ){
             console.log("Event: timeout");
             MatchMaker.close()
             break;
         }
+
         await sleep(3000);
     }
 }
