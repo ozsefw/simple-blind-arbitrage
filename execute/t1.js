@@ -30,16 +30,22 @@ async function sub_mm(){
     }
 
     while (true){
-        let cur_ts = Date.now();
-        console.log("cur: %s, last: %s, state: ", cur_ts, last_ts, MatchMaker.readyState);
+        try{
+            let cur_ts = Date.now();
+            console.log("Event: (cur %s, last %s, state)", cur_ts, last_ts);
 
-        if (MatchMaker.readyState == EventSource.CLOSED){
-            console.log("Event: EventSource closed");
-            break;
+            if (MatchMaker.readyState == EventSource.CLOSED){
+                console.log("Event: EventSource closed");
+                break;
+            }
+            else if ((cur_ts - last_ts) > (30*1000) ){
+                console.log("Event: timeout");
+                MatchMaker.close()
+                break;
+            }
         }
-        if ((cur_ts - last_ts) > (30*1000) ){
-            console.log("Event: timeout");
-            MatchMaker.close()
+        catch(e){
+            console.log("Event: Except: ", e);
             break;
         }
 
