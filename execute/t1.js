@@ -34,8 +34,8 @@ async function sub_mm(){
             console.log("Event: EventSource closed");
             break;
         }
-        if ((last_ts - Date.now()) > 30*1000){
-            console.log("Event: no update too long");
+        if ((Date.now() - last_ts) > 30*1000){
+            console.log("Event: timeout");
             MatchMaker.close()
             break;
         }
