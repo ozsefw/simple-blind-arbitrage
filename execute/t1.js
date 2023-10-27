@@ -30,32 +30,31 @@ async function sub_mm(){
     }
 
     while (true){
-        try{
-            let cur_ts = Date.now();
-            console.log("Event: (cur %s, last %s, state)", cur_ts, last_ts);
+        let cur_ts = Date.now();
+        console.log("Event: (cur %s, last %s, state)", cur_ts, last_ts);
 
-            if (MatchMaker.readyState == EventSource.CLOSED){
-                console.log("Event: EventSource closed");
-                break;
-            }
-            else if ((cur_ts - last_ts) > (30*1000) ){
-                console.log("Event: timeout");
-                MatchMaker.close()
-                break;
-            }
-        }
-        catch(e){
-            console.log("Event: Except: ", e);
+        if (MatchMaker.readyState == EventSource.CLOSED){
+            console.log("Event: EventSource closed");
             break;
         }
-
+        else if ((cur_ts - last_ts) > (30*1000) ){
+            console.log("Event: timeout");
+            MatchMaker.close()
+            break;
+        }
         await sleep(3000);
     }
 }
 
 async function main(){
     while(true){
-        await sub_mm();
+        try{
+            await sub_mm();
+        }
+        catch(e){
+            console.log("Event: Execption, ", e)
+            await sleep(3000);
+        }
     }
 }
 
